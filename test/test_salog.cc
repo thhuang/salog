@@ -6,6 +6,7 @@
 #include <thread>
 #include "gtest/gtest.h"
 #include "salog/salog.h"
+#include "salog/file_salog.h"
 #include "utils/timer.h"
 #include "utils/valid_parentheses.h"
 

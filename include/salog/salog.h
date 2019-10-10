@@ -12,9 +12,6 @@
 #include <sstream>
 #include <string>
 #include <thread>
-#include <utility>
-
-#include "utils/timer.h"  // TODO: refactor
 namespace salog {
 
 class SALog {
@@ -102,45 +99,6 @@ SALog& get_salog();
 
 extern SALog& tlogger;
 
-
-// TODO: refactor
-class FileSALog : public SALog {
- public:
-  void set_file(std::string filename) override {
-    if (!fout_.is_open()) fout_.open(filename);
-  }
-
-  ~FileSALog() {
-    fout_.close();
-    
-    salog::Timer timer{std::chrono::milliseconds(100)};  // 100 ms
-    timer.start();
-    while (!timer.ringed());
-  }
-
-  std::ofstream fout_{};
-
-  void flush() override {
-    fout_ << log_stream_.get_string_and_clear();
-    flush_ = false;
-  }
-
- private:
-  static std::unique_ptr<SALog> logger;
-  static SALog& get_flogger() {
-    if (logger == nullptr)
-      logger = std::unique_ptr<SALog>(new FileSALog);
-    return *logger;
-  }
-
-  friend SALog& get_file_salog();
-};
-
-SALog& get_file_salog();
-
-extern SALog& flogger;
-
-
 }  // namespace salog
 
 template <typename T>
@@ -162,6 +120,7 @@ salog::SALog& salog::SALog::write(T&& value) {
     current_log_ = std::begin(log_queue_);
     _current_thread_id = current_log_->thread_id;
     condition_variable_.notify_one();
+    
   } else if (_current_thread_id == id) {
     if (current_log_ == log_queue_.end())
       current_log_ = std::prev(log_queue_.end());
@@ -171,7 +130,5 @@ salog::SALog& salog::SALog::write(T&& value) {
 
   return *this;
 }
-
-
 
 #endif  // SALOG_SALOG_H

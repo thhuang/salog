@@ -1,5 +1,6 @@
 add_library(salog SHARED
   salog.cc
+  file_salog.cc
   log_buffer.cc
   log_stream.cc
 )

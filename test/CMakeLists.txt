@@ -13,7 +13,7 @@ target_link_libraries(${this} PRIVATE
   gtest
   gtest_main
   salog
-  utils
+  salog_utils
 )
 
 add_test(

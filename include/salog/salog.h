@@ -14,6 +14,7 @@
 #include <thread>
 #include <utility>
 
+#include "utils/timer.h"  // TODO: refactor
 namespace salog {
 
 class SALog {
@@ -24,7 +25,7 @@ class SALog {
   SALog& operator=(const SALog&) = delete;
   SALog& operator=(SALog&&) = delete;
 
-  static std::shared_ptr<SALog> logger;
+  static std::unique_ptr<SALog> logger;
 
  public:
   virtual ~SALog();
@@ -40,7 +41,7 @@ class SALog {
  protected:
   static SALog& get_logger() {
     if (logger == nullptr)
-      logger = std::shared_ptr<SALog>(new SALog);
+      logger = std::unique_ptr<SALog>(new SALog);
     return *logger;
   }
 
@@ -99,10 +100,10 @@ class SALog {
 
 SALog& get_salog();
 
-extern SALog& logger;
+extern SALog& tlogger;
 
 
-
+// TODO: refactor
 class FileSALog : public SALog {
  public:
   void set_file(std::string filename) override {
@@ -111,6 +112,10 @@ class FileSALog : public SALog {
 
   ~FileSALog() {
     fout_.close();
+    
+    salog::Timer timer{std::chrono::milliseconds(100)};  // 100 ms
+    timer.start();
+    while (!timer.ringed());
   }
 
   std::ofstream fout_{};
@@ -121,10 +126,10 @@ class FileSALog : public SALog {
   }
 
  private:
-  static std::shared_ptr<SALog> logger;
+  static std::unique_ptr<SALog> logger;
   static SALog& get_flogger() {
     if (logger == nullptr)
-      logger = std::shared_ptr<SALog>(new FileSALog);
+      logger = std::unique_ptr<SALog>(new FileSALog);
     return *logger;
   }
 

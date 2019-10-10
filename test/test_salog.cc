@@ -67,7 +67,7 @@ TEST_F(SALogTest, TestStreamAPI) {
     {
       CoutRedirector cout_redirector(buffer.rdbuf());
 
-      output(salog::logger);
+      output(salog::tlogger);
       output(target);
 
       salog::Timer timer{time_limit};
@@ -90,25 +90,25 @@ TEST_F(SALogTest, TestParallelOne) {
       CoutRedirector cout_redirector(buffer.rdbuf());
 
       std::thread t1([&] {
-        output(salog::logger, "Output 1 from thread 1");
-        output(salog::logger, "Output 2 from thread 1");
-        output(salog::logger, "Output 3 from thread 1");
+        output(salog::tlogger, "Output 1 from thread 1");
+        output(salog::tlogger, "Output 2 from thread 1");
+        output(salog::tlogger, "Output 3 from thread 1");
       });
 
-      output(salog::logger, "Output 1 from the main thread");
-      output(salog::logger, "Output 2 from the main thread");
-      output(salog::logger, "Output 3 from the main thread");
+      output(salog::tlogger, "Output 1 from the main thread");
+      output(salog::tlogger, "Output 2 from the main thread");
+      output(salog::tlogger, "Output 3 from the main thread");
 
       std::thread t2([&] {
-        output(salog::logger, "Output 1 from thread 2");
-        output(salog::logger, "Output 2 from thread 2");
-        output(salog::logger, "Output 3 from thread 2");
+        output(salog::tlogger, "Output 1 from thread 2");
+        output(salog::tlogger, "Output 2 from thread 2");
+        output(salog::tlogger, "Output 3 from thread 2");
       });
 
       std::thread t3([&] {
-        output(salog::logger, "Output 1 from thread 3");
-        output(salog::logger, "Output 2 from thread 3");
-        output(salog::logger, "Output 3 from thread 3");
+        output(salog::tlogger, "Output 1 from thread 3");
+        output(salog::tlogger, "Output 2 from thread 3");
+        output(salog::tlogger, "Output 3 from thread 3");
       });
 
       t1.join();
@@ -134,32 +134,32 @@ TEST_F(SALogTest, TestParallelTwo) {
       CoutRedirector cout_redirector(buffer.rdbuf());
 
       for (int i = 0; i < 10; ++i) {
-        salog::logger << "((((((((((((((((((((((((((((((((((((((((";
-        salog::logger << "))))))))))))))))))))))))))))))))))))))))";
-        salog::logger << std::endl;
+        salog::tlogger << "((((((((((((((((((((((((((((((((((((((((";
+        salog::tlogger << "))))))))))))))))))))))))))))))))))))))))";
+        salog::tlogger << std::endl;
       }
 
       std::thread t1([&] {
         for (int i = 0; i < 10; ++i) {
-          salog::logger << "((((((((((((((((((((((((((((((((((((((((";
-          salog::logger << "))))))))))))))))))))))))))))))))))))))))";
-          salog::logger << std::endl;
+          salog::tlogger << "((((((((((((((((((((((((((((((((((((((((";
+          salog::tlogger << "))))))))))))))))))))))))))))))))))))))))";
+          salog::tlogger << std::endl;
         }
       });
 
       std::thread t2([&] {
         for (int i = 0; i < 10; ++i) {
-          salog::logger << "[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[";
-          salog::logger << "]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]";
-          salog::logger << std::endl;
+          salog::tlogger << "[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[";
+          salog::tlogger << "]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]";
+          salog::tlogger << std::endl;
         }
       });
 
       std::thread t3([&] {
         for (int i = 0; i < 10; ++i) {
-          salog::logger << "{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{";
-          salog::logger << "}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}";
-          salog::logger << std::endl;
+          salog::tlogger << "{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{";
+          salog::tlogger << "}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}";
+          salog::tlogger << std::endl;
         }
       });
 
@@ -186,32 +186,32 @@ TEST_F(SALogTest, TestParallelThree) {
       CoutRedirector cout_redirector(buffer.rdbuf());
 
       for (int i = 0; i < 10; ++i) {
-        for (int j = 0; j < 100; ++j) salog::logger << "<";
-        for (int j = 0; j < 100; ++j) salog::logger << ">";
-        salog::logger << std::endl;
+        for (int j = 0; j < 100; ++j) salog::tlogger << "<";
+        for (int j = 0; j < 100; ++j) salog::tlogger << ">";
+        salog::tlogger << std::endl;
       }
 
       std::thread t1([&] {
         for (int i = 0; i < 10; ++i) {
-          for (int j = 0; j < 100; ++j) salog::logger << "(";
-          for (int j = 0; j < 100; ++j) salog::logger << ")";
-          salog::logger << std::endl;
+          for (int j = 0; j < 100; ++j) salog::tlogger << "(";
+          for (int j = 0; j < 100; ++j) salog::tlogger << ")";
+          salog::tlogger << std::endl;
         }
       });
 
       std::thread t2([&] {
         for (int i = 0; i < 10; ++i) {
-          for (int j = 0; j < 100; ++j) salog::logger << "[";
-          for (int j = 0; j < 100; ++j) salog::logger << "]";
-          salog::logger << std::endl;
+          for (int j = 0; j < 100; ++j) salog::tlogger << "[";
+          for (int j = 0; j < 100; ++j) salog::tlogger << "]";
+          salog::tlogger << std::endl;
         }
       });
 
       std::thread t3([&] {
         for (int i = 0; i < 10; ++i) {
-          for (int j = 0; j < 100; ++j) salog::logger << "{";
-          for (int j = 0; j < 100; ++j) salog::logger << "}";
-          salog::logger << std::endl;
+          for (int j = 0; j < 100; ++j) salog::tlogger << "{";
+          for (int j = 0; j < 100; ++j) salog::tlogger << "}";
+          salog::tlogger << std::endl;
         }
       });
 
@@ -239,7 +239,7 @@ TEST_F(SALogTest, TestParallelThree) {
       CoutRedirector cout_redirector(buffer.rdbuf());
 
       output(salog::flogger);
-      output(salog::logger);
+      output(salog::tlogger);
       output(target);
 
       salog::Timer timer{time_limit};
@@ -262,43 +262,43 @@ TEST_F(SALogTest, TestParallelTerminalAndFile) {
       CoutRedirector cout_redirector(buffer.rdbuf());
 
       for (int i = 0; i < 10; ++i) {
-        for (int j = 0; j < 100; ++j) salog::logger << "<";
+        for (int j = 0; j < 100; ++j) salog::tlogger << "<";
         for (int j = 0; j < 100; ++j) salog::flogger << "<";
-        for (int j = 0; j < 100; ++j) salog::logger << ">";
+        for (int j = 0; j < 100; ++j) salog::tlogger << ">";
         for (int j = 0; j < 100; ++j) salog::flogger << ">";
-        salog::logger << std::endl;
+        salog::tlogger << std::endl;
         salog::flogger << std::endl;
       }
 
       std::thread t1([&] {
         for (int i = 0; i < 10; ++i) {
-          for (int j = 0; j < 100; ++j) salog::logger << "(";
+          for (int j = 0; j < 100; ++j) salog::tlogger << "(";
           for (int j = 0; j < 100; ++j) salog::flogger << "(";
-          for (int j = 0; j < 100; ++j) salog::logger << ")";
+          for (int j = 0; j < 100; ++j) salog::tlogger << ")";
           for (int j = 0; j < 100; ++j) salog::flogger << ")";
-          salog::logger << std::endl;
+          salog::tlogger << std::endl;
           salog::flogger << std::endl;
         }
       });
 
       std::thread t2([&] {
         for (int i = 0; i < 10; ++i) {
-          for (int j = 0; j < 100; ++j) salog::logger << "[";
+          for (int j = 0; j < 100; ++j) salog::tlogger << "[";
           for (int j = 0; j < 100; ++j) salog::flogger << "[";
-          for (int j = 0; j < 100; ++j) salog::logger << "]";
+          for (int j = 0; j < 100; ++j) salog::tlogger << "]";
           for (int j = 0; j < 100; ++j) salog::flogger << "]";
-          salog::logger << std::endl;
+          salog::tlogger << std::endl;
           salog::flogger << std::endl;
         }
       });
 
       std::thread t3([&] {
         for (int i = 0; i < 10; ++i) {
-          for (int j = 0; j < 100; ++j) salog::logger << "{";
+          for (int j = 0; j < 100; ++j) salog::tlogger << "{";
           for (int j = 0; j < 100; ++j) salog::flogger << "{";
-          for (int j = 0; j < 100; ++j) salog::logger << "}";
+          for (int j = 0; j < 100; ++j) salog::tlogger << "}";
           for (int j = 0; j < 100; ++j) salog::flogger << "}";
-          salog::logger << std::endl;
+          salog::tlogger << std::endl;
           salog::flogger << std::endl;
         }
       });

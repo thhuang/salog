@@ -1,14 +1,16 @@
 #include "gtest/gtest.h"
 #include "utils/timer.h"
 #include <chrono>
+#include <thread>
 #include <unistd.h>
 
 // test ringed function
 TEST(TimerTest, TestRingedFunction) {
   salog::Timer timer{std::chrono::milliseconds(3)};
   timer.start();
+  std::this_thread::sleep_for(std::chrono::milliseconds(1));  // 1 ms
   EXPECT_FALSE(timer.ringed());
-  usleep(3500);  // 3.5 ms
+  std::this_thread::sleep_for(std::chrono::milliseconds(2));  // 2 ms
   EXPECT_TRUE(timer.ringed());
 }
 
@@ -16,9 +18,10 @@ TEST(TimerTest, TestRingedFunction) {
 TEST(StopwatchTest, TestPauseFunction) {
   salog::Timer timer{std::chrono::milliseconds(3)};
   timer.start();
+  std::this_thread::sleep_for(std::chrono::milliseconds(1));  // 1 ms
   timer.pause();
   EXPECT_FALSE(timer.ringed());
-  usleep(3500);  // 3.5 ms
+  std::this_thread::sleep_for(std::chrono::milliseconds(3));  // 3 ms
   EXPECT_FALSE(timer.ringed());
 }
 
@@ -26,12 +29,13 @@ TEST(StopwatchTest, TestPauseFunction) {
 TEST(StopwatchTest, TestResumeFunction) {
   salog::Timer timer{std::chrono::milliseconds(3)};
   timer.start();
+  std::this_thread::sleep_for(std::chrono::milliseconds(1));  // 1 ms
   timer.pause();
   EXPECT_FALSE(timer.ringed());
-  usleep(3500);  // 3.5 ms
+  std::this_thread::sleep_for(std::chrono::milliseconds(4));  // 4 ms
   EXPECT_FALSE(timer.ringed());
   timer.resume();
-  usleep(3500);  // 3.5 ms
+  std::this_thread::sleep_for(std::chrono::milliseconds(3));  // 2 ms
   EXPECT_TRUE(timer.ringed());
 }
 
@@ -39,10 +43,10 @@ TEST(StopwatchTest, TestResumeFunction) {
 TEST(TimerTest, TestResetFunction) {
   salog::Timer timer{std::chrono::milliseconds(2)};
   timer.start();
-  usleep(2500);  // 2.5 ms
+  std::this_thread::sleep_for(std::chrono::milliseconds(2));  // 2 ms
   EXPECT_TRUE(timer.ringed());
   timer.reset();
-  usleep(3000);  // 3 ms
+  std::this_thread::sleep_for(std::chrono::milliseconds(3));  // 3 ms
   EXPECT_FALSE(timer.ringed());
 }
 
@@ -50,13 +54,14 @@ TEST(TimerTest, TestResetFunction) {
 TEST(TimerTest, TestStartAfterResetFunction) {
   salog::Timer timer{std::chrono::milliseconds(3)};
   timer.start();
-  usleep(3500);  // 3.5 ms
+  std::this_thread::sleep_for(std::chrono::milliseconds(3));  // 3 ms
   EXPECT_TRUE(timer.ringed());
   timer.reset();
-  usleep(5000);  // 5 ms
+  std::this_thread::sleep_for(std::chrono::milliseconds(5));  // 5 ms
   EXPECT_FALSE(timer.ringed());
   timer.start();
+  std::this_thread::sleep_for(std::chrono::milliseconds(1));  // 1 ms
   EXPECT_FALSE(timer.ringed());
-  usleep(3500);  // 3.5 ms
+  std::this_thread::sleep_for(std::chrono::milliseconds(2));  // 2 ms
   EXPECT_TRUE(timer.ringed());
 }

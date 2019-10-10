@@ -1,6 +1,8 @@
 #include <algorithm>
+#include <cstdio>
 #include <sstream>
 #include <streambuf>
+#include <string>
 #include <thread>
 #include "gtest/gtest.h"
 #include "salog/salog.h"
@@ -26,14 +28,17 @@ class SALogTest : public ::testing::Test {
   std::chrono::milliseconds time_limit;
   std::stringstream target;
   std::stringstream buffer;
+  std::string filename = "/tmp/log.txt";
 
   void SetUp() override { 
     time_limit = std::chrono::milliseconds(16); 
     repeat_test = 16;
+    salog::flogger.set_file(filename);
   }
   void TearDown() override {
     buffer.str({});
     buffer.clear();
+    std::remove(filename.c_str());
   };
 
  public:
@@ -223,6 +228,99 @@ TEST_F(SALogTest, TestParallelThree) {
       << "i = " << i << std::endl;
     buffer.str({});
     buffer.clear();
+  }
+}
+
+// test file stream api with a time limit
+ TEST_F(SALogTest, TestFileStreamAPI) {
+   
+   for (int i = 0; i < repeat_test; ++i) {
+     {
+      CoutRedirector cout_redirector(buffer.rdbuf());
+
+      output(salog::flogger);
+      output(salog::logger);
+      output(target);
+
+      salog::Timer timer{time_limit};
+      timer.start();
+      while (!timer.ringed());
+     }
+     EXPECT_EQ(buffer.str(), target.str())
+       << "i = " << i << std::endl;
+     target.str({});
+     target.clear();
+     buffer.str({});
+     buffer.clear();
+   }
+ }
+
+// test parallel with terminal and file output
+TEST_F(SALogTest, TestParallelTerminalAndFile) {
+  for (int i = 0; i < repeat_test; ++i) {
+    {
+      CoutRedirector cout_redirector(buffer.rdbuf());
+
+      for (int i = 0; i < 10; ++i) {
+        for (int j = 0; j < 100; ++j) salog::logger << "<";
+        for (int j = 0; j < 100; ++j) salog::flogger << "<";
+        for (int j = 0; j < 100; ++j) salog::logger << ">";
+        for (int j = 0; j < 100; ++j) salog::flogger << ">";
+        salog::logger << std::endl;
+        salog::flogger << std::endl;
+      }
+
+      std::thread t1([&] {
+        for (int i = 0; i < 10; ++i) {
+          for (int j = 0; j < 100; ++j) salog::logger << "(";
+          for (int j = 0; j < 100; ++j) salog::flogger << "(";
+          for (int j = 0; j < 100; ++j) salog::logger << ")";
+          for (int j = 0; j < 100; ++j) salog::flogger << ")";
+          salog::logger << std::endl;
+          salog::flogger << std::endl;
+        }
+      });
+
+      std::thread t2([&] {
+        for (int i = 0; i < 10; ++i) {
+          for (int j = 0; j < 100; ++j) salog::logger << "[";
+          for (int j = 0; j < 100; ++j) salog::flogger << "[";
+          for (int j = 0; j < 100; ++j) salog::logger << "]";
+          for (int j = 0; j < 100; ++j) salog::flogger << "]";
+          salog::logger << std::endl;
+          salog::flogger << std::endl;
+        }
+      });
+
+      std::thread t3([&] {
+        for (int i = 0; i < 10; ++i) {
+          for (int j = 0; j < 100; ++j) salog::logger << "{";
+          for (int j = 0; j < 100; ++j) salog::flogger << "{";
+          for (int j = 0; j < 100; ++j) salog::logger << "}";
+          for (int j = 0; j < 100; ++j) salog::flogger << "}";
+          salog::logger << std::endl;
+          salog::flogger << std::endl;
+        }
+      });
+
+      t1.join();
+      t2.join();
+      t3.join();
+
+      salog::Timer timer{time_limit};
+      timer.start();
+      while (!timer.ringed());
+    }
+
+    EXPECT_TRUE(salog::valid_parentheses()(buffer.str()))
+      << "i = " << i << std::endl;
+    buffer.str({});
+    buffer.clear();
+
+    std::ifstream fin(filename);
+    std::string log_file{std::istreambuf_iterator<char>(fin), std::istreambuf_iterator<char>()};
+    EXPECT_TRUE(salog::valid_parentheses()(buffer.str()))
+      << "i = " << i << std::endl;
   }
 }
 

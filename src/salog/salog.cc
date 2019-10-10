@@ -94,5 +94,12 @@ salog::SALog& salog::get_salog() {
   return salog::SALog::get_logger();
 }
 
+salog::SALog& salog::get_file_salog() {
+  return salog::FileSALog::get_flogger();
+}
+
 std::shared_ptr<salog::SALog> salog::SALog::logger = nullptr;
 salog::SALog& salog::logger = salog::get_salog();
+
+std::shared_ptr<salog::SALog> salog::FileSALog::logger = nullptr;
+salog::SALog& salog::flogger = salog::get_file_salog();

@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <condition_variable>
+#include <fstream>
 #include <functional>
 #include <iostream>
 #include <list>
@@ -16,7 +17,7 @@
 namespace salog {
 
 class SALog {
- private:
+ protected:
   SALog() = default;
   SALog(const SALog&) = delete;
   SALog(SALog&&) = delete;
@@ -26,7 +27,7 @@ class SALog {
   static std::shared_ptr<SALog> logger;
 
  public:
-  ~SALog();
+  virtual ~SALog();
 
   template <typename T>
   SALog& operator<<(const T& value);
@@ -34,8 +35,9 @@ class SALog {
   SALog& operator<<(std::ios_base& (*pfunc)(std::ios_base&));
   SALog& operator<<(std::ostream& (*pfunc)(std::ostream&));
 
+  virtual void set_file(std::string filename) {}
 
- private:
+ protected:
   static SALog& get_logger() {
     if (logger == nullptr)
       logger = std::shared_ptr<SALog>(new SALog);
@@ -87,7 +89,7 @@ class SALog {
 
   void serialize();
 
-  void flush();
+  virtual void flush();
 
   template <typename T> 
   SALog& write(T&& value);
@@ -98,6 +100,41 @@ class SALog {
 SALog& get_salog();
 
 extern SALog& logger;
+
+
+
+class FileSALog : public SALog {
+ public:
+  void set_file(std::string filename) override {
+    if (!fout_.is_open()) fout_.open(filename);
+  }
+
+  ~FileSALog() {
+    fout_.close();
+  }
+
+  std::ofstream fout_{};
+
+  void flush() override {
+    fout_ << log_stream_.get_string_and_clear();
+    flush_ = false;
+  }
+
+ private:
+  static std::shared_ptr<SALog> logger;
+  static SALog& get_flogger() {
+    if (logger == nullptr)
+      logger = std::shared_ptr<SALog>(new FileSALog);
+    return *logger;
+  }
+
+  friend SALog& get_file_salog();
+};
+
+SALog& get_file_salog();
+
+extern SALog& flogger;
+
 
 }  // namespace salog
 
@@ -129,5 +166,7 @@ salog::SALog& salog::SALog::write(T&& value) {
 
   return *this;
 }
+
+
 
 #endif  // SALOG_SALOG_H

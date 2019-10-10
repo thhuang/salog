@@ -6,6 +6,7 @@
 #include <functional>
 #include <iostream>
 #include <list>
+#include <memory>
 #include <mutex>
 #include <sstream>
 #include <string>
@@ -15,10 +16,16 @@
 namespace salog {
 
 class SALog {
- public:
+ private:
   SALog() = default;
   SALog(const SALog&) = delete;
-  SALog(SALog&&) = default;
+  SALog(SALog&&) = delete;
+  SALog& operator=(const SALog&) = delete;
+  SALog& operator=(SALog&&) = delete;
+
+  static std::shared_ptr<SALog> logger;
+
+ public:
   ~SALog();
 
   template <typename T>
@@ -26,10 +33,15 @@ class SALog {
   SALog& operator<<(std::ios& (*pfunc)(std::ios&));
   SALog& operator<<(std::ios_base& (*pfunc)(std::ios_base&));
   SALog& operator<<(std::ostream& (*pfunc)(std::ostream&));
-  SALog& operator=(const SALog&) = default;
-  SALog& operator=(SALog&&) = default;
+
 
  private:
+  static SALog& get_logger() {
+    if (logger == nullptr)
+      logger = std::shared_ptr<SALog>(new SALog);
+    return *logger;
+  }
+
   class LogBuffer : public std::stringbuf {
    public:
     explicit LogBuffer(SALog& log);
@@ -79,7 +91,13 @@ class SALog {
 
   template <typename T> 
   SALog& write(T&& value);
+
+  friend SALog& get_salog();
 };
+
+SALog& get_salog();
+
+extern SALog& logger;
 
 }  // namespace salog
 

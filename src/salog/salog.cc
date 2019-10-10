@@ -89,3 +89,10 @@ void salog::SALog::serialize() {
     } while (current_log_ != log_queue_.end() && _current_thread_id == current_log_->thread_id);
   }  // while (true)
 }
+
+salog::SALog& salog::get_salog() {
+  return salog::SALog::get_logger();
+}
+
+std::shared_ptr<salog::SALog> salog::SALog::logger = nullptr;
+salog::SALog& salog::logger = salog::get_salog();

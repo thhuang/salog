@@ -28,8 +28,8 @@ class SALogTest : public ::testing::Test {
   std::stringstream buffer;
 
   void SetUp() override { 
-    time_limit = std::chrono::milliseconds(2); 
-    repeat_test = 100;
+    time_limit = std::chrono::milliseconds(16); 
+    repeat_test = 16;
   }
   void TearDown() override {
     buffer.str({});
@@ -59,17 +59,25 @@ class SALogTest : public ::testing::Test {
 // test stream api with a time limit
 TEST_F(SALogTest, TestStreamAPI) {
   salog::SALog log;
-  {
-    CoutRedirector cout_redirector(buffer.rdbuf());
 
-    output(log);
-    output(target);
+  for (int i = 0; i < repeat_test; ++i) {
+    {
+      CoutRedirector cout_redirector(buffer.rdbuf());
 
-    salog::Timer timer{std::chrono::milliseconds(2)};
-    timer.start();
-    while (!timer.ringed());
+      output(log);
+      output(target);
+
+      salog::Timer timer{time_limit};
+      timer.start();
+      while (!timer.ringed());
+    }
+    EXPECT_EQ(buffer.str(), target.str())
+      << "i = " << i << std::endl;
+    target.str({});
+    target.clear();
+    buffer.str({});
+    buffer.clear();
   }
-  EXPECT_EQ(buffer.str(), target.str());
 }
 
 // test parallel 1

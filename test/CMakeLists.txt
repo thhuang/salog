@@ -10,6 +10,7 @@ set(sources
 
 add_executable(${this} ${sources})
 target_link_libraries(${this} PRIVATE
+  gtest
   gtest_main
   salog
   utils

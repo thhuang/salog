@@ -78,15 +78,11 @@ class SALog {
 
   bool closing_ = false;
   bool flush_ = false;
-
   LogStream log_stream_{*this};
-
   std::thread thread_{&SALog::serialize, this};
 
   void handle_sync();
-
   void serialize();
-
   virtual void flush();
 
   template <typename T> 

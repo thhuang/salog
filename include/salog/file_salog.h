@@ -11,7 +11,6 @@ class FileSALog : public SALog {
 
   ~FileSALog();
   std::ofstream fout_{};
-  
 
  private:
   static std::unique_ptr<SALog> logger;

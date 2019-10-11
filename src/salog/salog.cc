@@ -22,7 +22,6 @@ salog::SALog& salog::SALog::operator<<(std::ostream& (*pfunc)(std::ostream&)) {
   return write(pfunc);
 }
 
-
 void salog::SALog::handle_sync() {
   flush_ = true;
 }
@@ -45,8 +44,8 @@ void salog::SALog::serialize() {
         if (current_log_ == log_queue_.end()) {
           current_log_ = std::begin(log_queue_);
           _current_thread_id = current_log_->thread_id;
-        }  // if (current_log_ == log_queue_.end())
-
+        }
+        
         while (current_log_ != log_queue_.end()) {
           if (_current_thread_id == current_log_->thread_id) {
             current_log_->push_to_buffer();
@@ -79,6 +78,7 @@ void salog::SALog::serialize() {
         }
 
         _current_thread_id = current_log_->thread_id;
+        
       } else {
         current_log_ = std::find_if(log_queue_.erase(current_log_), log_queue_.end(), 
           [=](const LogEntry& entry) {

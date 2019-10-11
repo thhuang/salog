@@ -1,12 +1,12 @@
 # SALog
-A super awesome lightweight C++ logger library.
+A super awesome C++ logger library.
 
 ## Features
 - Small and simple! No dependencies! Short compilation time!
 - Support logging to terminal or a file according to the configuration.
 - Thread-safe! Support multi-threaded logging.
 - Logging with streams. As simple as using a generic C++ output stream.
-- Support every manipulators and types support by [`std::ostream::operator<<`](http://www.cplusplus.com/reference/ostream/ostream/operator<</) and [`std::operator<< (ostream)`](http://www.cplusplus.com/reference/ostream/ostream/operator-free/)
+- Support every manipulators and types supported by [`std::ostream::operator<<`](http://www.cplusplus.com/reference/ostream/ostream/operator<</) and [`std::operator<< (ostream)`](http://www.cplusplus.com/reference/ostream/ostream/operator-free/)
 - The output format is completely dependent on user input. That is, no prefix will be printed.
 
 ## Compiling

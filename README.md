@@ -1,5 +1,5 @@
 # SALog
-A super awesome C++ logger library.
+A super awesome lightweight C++ logger library.
 
 ## Features
 - Small and simple! No dependencies! Short compilation time!

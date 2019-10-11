@@ -73,7 +73,7 @@ A super awesome lightweight C++ logger library.
 
 ## Test
 In the project root of `salog`:
-```bash
+```
 mkdir build
 cd build
 cmake ..

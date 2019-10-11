@@ -69,6 +69,7 @@ A super awesome lightweight C++ logger library.
     salog::flogger << std::setw(16) << std::left << std::setfill(' ')
                    << std::this_thread::get_id();
     ```
+    ![](./misc/demo.gif)
 
 ## Test
 In the project root of `salog`:
@@ -79,3 +80,4 @@ cmake ..
 make
 ../bin/tests
 ```
+<img src="./misc/test.png" width="300" /> 

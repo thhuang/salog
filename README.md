@@ -22,6 +22,8 @@ A super awesome lightweight C++ logger library.
         add_library(source SHARED source.cpp)
         target_link_libraries(source salog ${OTHER_LIBS})
         ```
+4. Use a compiler which supports C++14 to compile.
+
 ## Usage
 ### Logging to Terminal
 - Use `salog::tlogger` for logging to terminal.

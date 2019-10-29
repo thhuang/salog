@@ -140,7 +140,7 @@ TEST_F(SALogTest, TestParallelTwo) {
         salog::tlogger << std::endl;
       }
 
-      std::thread t1([&] {
+      std::thread t1([] {
         for (int i = 0; i < 10; ++i) {
           salog::tlogger << "((((((((((((((((((((((((((((((((((((((((";
           salog::tlogger << "))))))))))))))))))))))))))))))))))))))))";
@@ -148,7 +148,7 @@ TEST_F(SALogTest, TestParallelTwo) {
         }
       });
 
-      std::thread t2([&] {
+      std::thread t2([] {
         for (int i = 0; i < 10; ++i) {
           salog::tlogger << "[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[";
           salog::tlogger << "]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]";
@@ -156,7 +156,7 @@ TEST_F(SALogTest, TestParallelTwo) {
         }
       });
 
-      std::thread t3([&] {
+      std::thread t3([] {
         for (int i = 0; i < 10; ++i) {
           salog::tlogger << "{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{";
           salog::tlogger << "}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}";
@@ -192,7 +192,7 @@ TEST_F(SALogTest, TestParallelThree) {
         salog::tlogger << std::endl;
       }
 
-      std::thread t1([&] {
+      std::thread t1([] {
         for (int i = 0; i < 10; ++i) {
           for (int j = 0; j < 100; ++j) salog::tlogger << "(";
           for (int j = 0; j < 100; ++j) salog::tlogger << ")";
@@ -200,7 +200,7 @@ TEST_F(SALogTest, TestParallelThree) {
         }
       });
 
-      std::thread t2([&] {
+      std::thread t2([] {
         for (int i = 0; i < 10; ++i) {
           for (int j = 0; j < 100; ++j) salog::tlogger << "[";
           for (int j = 0; j < 100; ++j) salog::tlogger << "]";
@@ -208,7 +208,7 @@ TEST_F(SALogTest, TestParallelThree) {
         }
       });
 
-      std::thread t3([&] {
+      std::thread t3([] {
         for (int i = 0; i < 10; ++i) {
           for (int j = 0; j < 100; ++j) salog::tlogger << "{";
           for (int j = 0; j < 100; ++j) salog::tlogger << "}";
@@ -271,7 +271,7 @@ TEST_F(SALogTest, TestParallelTerminalAndFile) {
         salog::flogger << std::endl;
       }
 
-      std::thread t1([&] {
+      std::thread t1([] {
         for (int i = 0; i < 10; ++i) {
           for (int j = 0; j < 100; ++j) salog::tlogger << "(";
           for (int j = 0; j < 100; ++j) salog::flogger << "(";
@@ -282,7 +282,7 @@ TEST_F(SALogTest, TestParallelTerminalAndFile) {
         }
       });
 
-      std::thread t2([&] {
+      std::thread t2([] {
         for (int i = 0; i < 10; ++i) {
           for (int j = 0; j < 100; ++j) salog::tlogger << "[";
           for (int j = 0; j < 100; ++j) salog::flogger << "[";
@@ -293,7 +293,7 @@ TEST_F(SALogTest, TestParallelTerminalAndFile) {
         }
       });
 
-      std::thread t3([&] {
+      std::thread t3([] {
         for (int i = 0; i < 10; ++i) {
           for (int j = 0; j < 100; ++j) salog::tlogger << "{";
           for (int j = 0; j < 100; ++j) salog::flogger << "{";

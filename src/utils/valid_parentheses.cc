@@ -2,7 +2,6 @@
 
 bool salog::valid_parentheses::operator()(std::string s) {
   if (!s.size()) return true;
-  bool valid = true;
   std::stack<char> parentheses_stack;
   
   for (char c : s) {

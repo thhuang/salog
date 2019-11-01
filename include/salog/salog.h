@@ -74,7 +74,7 @@ class SALog {
 
   std::list<LogEntry> log_queue_;
   std::list<LogEntry>::iterator current_log_ = log_queue_.end();
-  std::thread::id _current_thread_id;
+  std::thread::id current_thread_id_;
 
   bool closing_ = false;
   bool flush_ = false;
@@ -112,12 +112,12 @@ salog::SALog& salog::SALog::write(T&& value) {
   }});
 
   // If the current thread id is unknown
-  if (_current_thread_id == std::thread::id{}) {
+  if (current_thread_id_ == std::thread::id{}) {
     current_log_ = std::begin(log_queue_);
-    _current_thread_id = current_log_->thread_id;
+    current_thread_id_ = current_log_->thread_id;
     condition_variable_.notify_one();
     
-  } else if (_current_thread_id == id) {
+  } else if (current_thread_id_ == id) {
     if (current_log_ == log_queue_.end())
       current_log_ = std::prev(log_queue_.end());
 

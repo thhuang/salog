@@ -43,11 +43,11 @@ void salog::SALog::serialize() {
       while (!log_queue_.empty()) {
         if (current_log_ == log_queue_.end()) {
           current_log_ = std::begin(log_queue_);
-          _current_thread_id = current_log_->thread_id;
+          current_thread_id_ = current_log_->thread_id;
         }
         
         while (current_log_ != log_queue_.end()) {
-          if (_current_thread_id == current_log_->thread_id) {
+          if (current_thread_id_ == current_log_->thread_id) {
             current_log_->push_to_buffer();
             current_log_ = log_queue_.erase(current_log_);
           } else {
@@ -73,20 +73,20 @@ void salog::SALog::serialize() {
 
         // Nothing in the queue
         if (current_log_ == log_queue_.end()) {
-          _current_thread_id = {};
+          current_thread_id_ = {};
           break;
         }
 
-        _current_thread_id = current_log_->thread_id;
+        current_thread_id_ = current_log_->thread_id;
         
       } else {
         current_log_ = std::find_if(log_queue_.erase(current_log_), log_queue_.end(), 
           [=](const LogEntry& entry) {
-            return _current_thread_id == entry.thread_id;
+            return current_thread_id_ == entry.thread_id;
           }
         );
       }  // if (flush_)
-    } while (current_log_ != log_queue_.end() && _current_thread_id == current_log_->thread_id);
+    } while (current_log_ != log_queue_.end() && current_thread_id_ == current_log_->thread_id);
   }  // while (true)
 }
 

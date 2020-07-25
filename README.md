@@ -72,14 +72,3 @@ A super awesome lightweight C++ logger library.
                    << std::this_thread::get_id();
     ```
     ![](./misc/demo.gif)
-
-## Test
-In the project root of `salog`:
-```
-mkdir build
-cd build
-cmake ..
-make
-../bin/tests
-```
-<img src="./misc/test.png" width="300" /> 

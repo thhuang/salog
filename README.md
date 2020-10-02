@@ -59,7 +59,7 @@ A super awesome lightweight C++ logger library.
 
 ### Logging to terminal and a file at the same time
 - Set the output file path before logging to the file.
-- E.g. [demo.cpp](./misc/demo.cpp)
+- E.g. [demo.cc](./misc/demo.cc)
     ```cpp
     // BracketOutput to terminal
     salog::tlogger << text << ", thread index: ";
